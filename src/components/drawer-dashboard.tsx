@@ -23,13 +23,25 @@ import QrCodeIcon from '@mui/icons-material/QrCode';
 import NoteIcon from '@mui/icons-material/Note';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import FolderIcon from '@mui/icons-material/Folder';
-
+import { useNavigate } from 'react-router-dom';
+import useAuthStore from '../store/authStore';
 
 const DrawerDashboard = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuthStore();
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const DrawerList = (
@@ -72,7 +84,7 @@ const DrawerDashboard = () => {
 
       <Typography>Navigation</Typography>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton  onClick={() => navigate("/history")}>
               <ListItemIcon>
                 <HistoryIcon /> 
               </ListItemIcon>
@@ -82,8 +94,8 @@ const DrawerDashboard = () => {
 
 
           <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
+            <ListItemButton onClick={() => navigate("/request")}>
+              <ListItemIcon >
                 <NoteIcon /> 
               </ListItemIcon>
               <ListItemText>File Requests</ListItemText>
@@ -133,7 +145,9 @@ const DrawerDashboard = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Menu
           </Typography>
-          <IconButton color="inherit"><LogoutIcon/></IconButton>
+          <IconButton color="inherit" onClick={handleLogout}>
+            <LogoutIcon/>
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer open={open} onClose={toggleDrawer(false)}>

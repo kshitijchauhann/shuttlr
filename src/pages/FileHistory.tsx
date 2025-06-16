@@ -6,6 +6,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Pagination from '@mui/material/Pagination';
 
 function createData(name, fileType, size, sender, date, time) {
   return { name, fileType, size, sender, date, time };
@@ -22,8 +24,14 @@ const rows = [
 
 export default function BasicTable() {
   return (
+    <Box
+      sx={{
+        width: '100vw',
+        height: '80vh'
+      }}
+    >
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table sx={{ minWidth: 650, minHeight: 900 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>File Name</TableCell>
@@ -54,6 +62,12 @@ export default function BasicTable() {
           ))}
         </TableBody>
       </Table>
+
+<Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
+  <Pagination count={10} variant="outlined" shape="rounded" />
+</Box>
     </TableContainer>
+
+</Box>
   );
 }

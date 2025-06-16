@@ -9,36 +9,45 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import { PieChart } from '@mui/x-charts/PieChart';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
+import Pagination from '@mui/material/Pagination';
 
-const Chart = () => {
-  return (
-    <PieChart
-      series={[
-        {
-          data: [
-            { id: 0, value: 10, label: 'Images' },
-            { id: 1, value: 15, label: 'Audio' },
-            { id: 2, value: 20, label: 'Videos' },
-            { id: 3, value: 9, label: 'Documents'}
-          ],
-        },
-      ]}
-      width={200}
-      height={200}
-    />
-  );
-}
+import SearchFilter from "../components/search-filter.tsx";
+import Sortby from "../components/search-sortby.tsx";
 
+
+import Grid  from '@mui/material/Grid';
+import InputAdornment from '@mui/material/InputAdornment';
+import UpperCards from "../components/upper-cards.tsx";
 
 const SearchArea = () => {
   return (
     <>
-   <Stack direction="row" sx={{ m: 1}}>
-   <TextField id="search-files" variant="outlined" placeholder="Search Files" fullWidth/>
-   <IconButton><SearchIcon/></IconButton>
+   <Stack direction="row"
+  spacing={2}
+  sx={{
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    m: 2
+  }}>
+  <TextField
+    id="input-with-icon-textfield"
+    placeholder="Search files or senders"
+    slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          },
+        }}
+        variant="outlined"
+        fullWidth
+    />
+    <SearchFilter/>
+    <Sortby/>
    </Stack>
    </>
   )
@@ -68,7 +77,7 @@ const FileArea = () => {
     { id: '20', name: 'video', extension: 'mp4', size: '8.9MB'}
   ];
 
-  const getExtension = (extension) => {
+  const getExtension = (extension: string) => {
     switch (extension) {
       case 'pdf':
         return PictureAsPdfIcon;
@@ -90,10 +99,12 @@ const FileArea = () => {
       direction="row" 
       sx={{ 
         maxWidth: '100%', 
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         flexWrap: 'wrap',
         gap: 1,
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+
+        overflow: 'hidden'
       }}
     >
       {fileData.map((item) => {
@@ -104,10 +115,12 @@ const FileArea = () => {
             elevation={2}
             sx={{ 
               padding: 2,
-              width: 150,
+              width: 160,
               textAlign: 'center',
               flexShrink: 0,
-              borderStyle: 'solid'
+              borderRadius: 2,
+              boxShadow: 1,
+              backgroundColor: '#fff'
             }}
           >
             <IconButton>
@@ -120,28 +133,39 @@ const FileArea = () => {
           </Paper>
         );
       })}
+
+          <Pagination count={10} shape="rounded" sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 2 }} />
     </Stack>
   );
 };
 
 const Dashboard = () => {
   return (
-    <Box sx={{ 
-        display: 'flex', 
+    <Box
+      sx={{
+        height: '90vh',
+        display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center', 
-        height: '100vh',
-    }}>
-      <Box sx={{ maxWidth: '100vw'}}>
+        alignItems: 'flex-start',
+        pt: 8,
+        backgroundColor: '#f5f7fa',
+      }}
+    >
+      <Box sx={{ maxWidth: '100vw' }}>
         <DrawerDashboard />
-        <Box sx={{ borderStyle: 'dotted', width: 1000, p: 3, m: 2}}>
-          <SearchArea/>
-        <FileArea />
+        <UpperCards />
+        <Box sx={{ maxWidth: 1200, p: 3, mx: 'auto', mt: 10 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <SearchArea />
+            </Grid>
+            <Grid item xs={12}>
+              <FileArea />
+            </Grid>
+          </Grid>
         </Box>
-
-        <Chart/>
-      </Box>
-    </Box>
+      </Box>     
+    </Box>  
   );
 };
 

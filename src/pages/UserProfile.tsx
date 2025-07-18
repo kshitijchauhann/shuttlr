@@ -19,10 +19,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import React, { useState } from 'react';
+import useAuthStore from '../store/authStore';
 import Chart from "../components/chart.tsx";
 
 
 const ChangeUserInfo = () => {
+  const { user } = useAuthStore();
 
   const [click, setClick] = useState(false);
 
@@ -35,16 +37,16 @@ const ChangeUserInfo = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2}}>
       <Card sx={{ p: 2, height: 400 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-          <Avatar sx={{ height: 150, width: 150, bgcolor: deepOrange[500] }}>N</Avatar>
-            <Typography variant="h5">My Name</Typography>
-          <Typography variant="h6">@youruser</Typography>
+                    <Avatar sx={{ height: 150, width: 150, bgcolor: deepOrange[500] }}>{user?.name.charAt(0)}</Avatar>
+            <Typography variant="h5">{user?.name}</Typography>
+          <Typography variant="h6">@{user?.userName}</Typography>
         </Box>
       </Card>
       <Card sx={{ p: 2, height: 400 }}>
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
           Email
         </Typography>
-        <Typography variant="body1">sample@shuttlr.tech</Typography>
+                <Typography variant="body1">{user?.email}</Typography>
         <Button onClick={handleClick}>Change Email</Button>
       </Card>
 

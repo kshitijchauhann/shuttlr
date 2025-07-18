@@ -10,48 +10,16 @@ interface User {
   userName: string;
 }
 
-export const userLocalLogin = async(req: Request, res: Response) => {
-  const { email, password } = req.body;  
-
-  if (!email || !password) {
-    res.status(400).json( {message: "All fields are required"});
-    return
-  }
-
-  try {
-    const user = await findUser(email);
-    if (!user) {
-      res.status(401).json({ message: "User not found" });
-      return;
-    }
-
-    const hashed_password = await getPassword(email);
-    if (!hashed_password) {
-      res.status(401).json({ message: "Invalid credentials" });
-      return;
-    }
-
-    const match = await bcrypt.compare(password, hashed_password);
-    if (!match) {
-      res.status(401).json({ message: "Incorrect Password" });
-      return;
-    }
-
-    const userData: User = {
+export const loginSuccess = (req: Request, res: Response) => {
+  const user = req.user as any; // Use 'any' to access the property from the database
+  const userData: User = {
       id: user.id,
       email: user.email,
       name: user.name,
-      userName: user.username
-    };
-
-    req.session.user = userData;
-
-    res.status(200).json({ message: "Login Successful", user: userData });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-}
+      userName: user.username // Correctly map 'username' to 'userName'
+  };
+  res.status(200).json({ message: "Login Successful", user: userData });
+};
 const generateUsername = (nameOrEmail: string): string => {
   const base = slugify(nameOrEmail.split("@")[0] || "user").toLowerCase(); 
   const suffix = Math.floor(1000 + Math.random() * 9000);    

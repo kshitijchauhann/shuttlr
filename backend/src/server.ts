@@ -81,4 +81,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api", router);
 
-server.listen(3000, () => console.log("Express + websocket server running on port 3000!"));
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+  console.log(`Express + WebSocket server running on port ${PORT}!`);
+});

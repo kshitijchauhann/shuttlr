@@ -4,14 +4,14 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcrypt";
-import { findUser, getPassword } from "./database/queries";
-import router from "./routes/routes";
+import { findUser, getPassword } from "./database/queries.js";
+import router from "./routes/routes.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
-import {setupWebSocketServer} from "./signalling/signallingService";
+import {setupWebSocketServer} from "./signalling/signallingService.js";
 
 dotenv.config();
 

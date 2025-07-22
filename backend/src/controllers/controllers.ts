@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import slugify from "slugify";
-import {addUserLocal, findUser, getPassword} from "../database/queries.js";
+import { addUserLocal, findUser, getPassword } from "../database/queries.js";
 import { Request, Response } from "express";
 
 interface User {
@@ -13,21 +13,21 @@ interface User {
 export const loginSuccess = (req: Request, res: Response) => {
   const user = req.user as any; // Use 'any' to access the property from the database
   const userData: User = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      userName: user.username // Correctly map 'username' to 'userName'
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    userName: user.username, // Correctly map 'username' to 'userName'
   };
   res.status(200).json({ message: "Login Successful", user: userData });
 };
 const generateUsername = (nameOrEmail: string): string => {
-  const base = slugify(nameOrEmail.split("@")[0] || "user").toLowerCase(); 
-  const suffix = Math.floor(1000 + Math.random() * 9000);    
-  return `${base}${suffix}`; 
-}
+  const base = slugify(nameOrEmail.split("@")[0] || "user").toLowerCase();
+  const suffix = Math.floor(1000 + Math.random() * 9000);
+  return `${base}${suffix}`;
+};
 
-export const userLocalSignUp = async(req: Request, res: Response) => {
-  const {name, email, password } = req.body;
+export const userLocalSignUp = async (req: Request, res: Response) => {
+  const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
     res.status(400).json({ message: "All fields are required" });
@@ -43,17 +43,17 @@ export const userLocalSignUp = async(req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const userName = generateUsername(name);
-    
+
     await addUserLocal(name, email, hashedPassword, userName);
-    
+
     // Return the generated username in the response
-    res.status(201).json({ 
+    res.status(201).json({
       message: "Signup Successful",
       user: {
         name,
         email,
-        userName
-      }
+        userName,
+      },
     });
   } catch (err) {
     console.error(err);
@@ -61,3 +61,28 @@ export const userLocalSignUp = async(req: Request, res: Response) => {
   }
 };
 
+export const changePassword = async (req: Request, res: Response) => {
+  const { email, currentPassword, newPassword } = req.body;
+
+  try {
+    const hashedPassword = await getPassword(email);
+
+    if (!hashedPassword) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const match = await bcrypt.compare(currentPassword, hashedPassword);
+
+    if (!match) {
+      return res.status(401).json({ message: "Incorrect current password" });
+    }
+
+    const newHashedPassword = await bcrypt.hash(newPassword, 10);
+    await updatePassword(email, newHashedPassword);
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error("Error changing password:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

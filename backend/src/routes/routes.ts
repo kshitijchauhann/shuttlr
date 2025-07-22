@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { userLocalSignUp, loginSuccess, changePassword } from "../controllers/controllers.js"
+import { userLocalSignUp, loginSuccess, changePassword } from "../controllers/controllers"
 
 
 const router = Router();

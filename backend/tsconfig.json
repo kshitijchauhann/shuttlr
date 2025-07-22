@@ -3,7 +3,7 @@
     // Target and Module Settings
     "target": "ES2022",
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     
     // Output Settings

@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import slugify from "slugify";
-import { addUserLocal, findUser, getPassword } from "../database/queries.js";
+import { addUserLocal, findUser, getPassword, updatePassword } from "../database/queries";
 import { Request, Response } from "express";
 
 interface User {
@@ -68,21 +68,25 @@ export const changePassword = async (req: Request, res: Response) => {
     const hashedPassword = await getPassword(email);
 
     if (!hashedPassword) {
-      return res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "User not found" });
+      return 
     }
 
     const match = await bcrypt.compare(currentPassword, hashedPassword);
 
     if (!match) {
-      return res.status(401).json({ message: "Incorrect current password" });
+      res.status(401).json({ message: "Incorrect current password" });
+      return 
     }
 
     const newHashedPassword = await bcrypt.hash(newPassword, 10);
     await updatePassword(email, newHashedPassword);
 
-    return res.status(200).json({ message: "Password updated successfully" });
+    res.status(200).json({ message: "Password updated successfully" });
+    return 
   } catch (err) {
     console.error("Error changing password:", err);
-    return res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
+    return 
   }
 };

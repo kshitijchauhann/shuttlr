@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import slugify from "slugify";
-import { addUserLocal, findUser, getPassword, updatePassword } from "../database/queries";
+import { addUserLocal, findUser, getPassword, updatePassword } from "../database/queries.js";
 import { Request, Response } from "express";
 
 interface User {
